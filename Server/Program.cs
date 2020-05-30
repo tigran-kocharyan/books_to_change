@@ -9,7 +9,7 @@ using System.IO;
 
 namespace Server
 {
-    class Program
+    public class Program
     {
         static async Task Main()
         {
@@ -25,11 +25,12 @@ namespace Server
                 try
                 {
                     SyncMethod(files);
+                    await AsyncMethod(files);
                 }
                 catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("ERROR:\n" + e.Message);
+                    Console.WriteLine("ERROR: " + e.Message);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
 
@@ -56,17 +57,29 @@ namespace Server
             stopwatch.Stop();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\nSync Method finishes within: " +
+            Console.WriteLine($"Sync Method Finishes Within: " +
                 $"{stopwatch.Elapsed} ({stopwatch.Elapsed:ss\\.fff} sec)\n");
             Console.ForegroundColor = ConsoleColor.White;
         }
 
-        ///// <summary>
-        ///// Асинхронное выполнение чтения, замены и записи.
-        ///// </summary>
-        //public static Task AsyncMethod(string[] fileNames)
-        //{
+        /// <summary>
+        /// Асинхронное выполнение чтения, замены и записи.
+        /// </summary>
+        public static async Task AsyncMethod(string[] files)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("\nAsync Method Starts...");
+            Console.ForegroundColor = ConsoleColor.White;
 
-        //}
+            stopwatch.Start();
+            await Task.WhenAll(files.Select(file => Task.Run(() => Letters.ChangeLetters(file))));
+            stopwatch.Stop();
+
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine($"Async Method Finishes Within: " +
+                $"{stopwatch.Elapsed} ({stopwatch.Elapsed:ss\\.fff} sec)\n");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
     }
 }

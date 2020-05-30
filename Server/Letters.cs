@@ -72,39 +72,72 @@ namespace Server
         public static void ChangeLetters(string file)
         {
             int lettersInitial;
-            int lettersAfterwards = 0;
 
             Stopwatch watch = new Stopwatch();
             StringBuilder textNew = new StringBuilder();
 
-            watch.Start();
-            string textOld = File.ReadAllText(pathOld + file + ".txt");
-
-            lettersInitial = textOld.Length;
-            for (int i = 0; i < lettersInitial; i++)
+            try
             {
-                if (letters.ContainsKey(textOld[i]))
+                watch.Start();
+                string textOld = File.ReadAllText(pathOld + file + ".txt");
+
+                lettersInitial = textOld.Length;
+                for (int i = 0; i < lettersInitial; i++)
                 {
-                    // Альтернативным решенем было бы создание обычной строки и добавление.
-                    textNew.Append(letters[textOld[i]]);
-                    lettersAfterwards++;
-                }
-                else
-                {
-                    if (!char.IsLetter(textOld[i]))
+                    if (letters.ContainsKey(textOld[i]))
                     {
                         // Альтернативным решенем было бы создание обычной строки и добавление.
                         textNew.Append(letters[textOld[i]]);
-                        lettersAfterwards++;
+                    }
+                    else
+                    {
+                        if (!char.IsLetter(textOld[i]))
+                        {
+                            // Альтернативным решенем было бы создание обычной строки и добавление.
+                            textNew.Append(textOld[i]);
+                        }
                     }
                 }
+                watch.Stop();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("Name: " + file + $".txt:\n" +
+                    $"\t\tInitial Letters: {lettersInitial} " +
+                    $"--> Afterwards Letters: {textNew.ToString().Length}\n" +
+                    $"\t\tTime: {watch.Elapsed} ({watch.Elapsed:ss\\.fff} sec)");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                File.WriteAllText(textNew.ToString(), pathNew + "new_" + file + ".txt");
             }
-            watch.Stop();
-            Console.WriteLine("Current file: " + file + $".txt:\t" +
-                $"Initial Letters: {lettersInitial} --> Afterwards Letters: {lettersAfterwards}\n");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine($"\t\tTime: {watch.Elapsed} ({watch.Elapsed:ss\\.fff} sec)");
-            Console.ForegroundColor = ConsoleColor.White;
+            catch (FileNotFoundException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No File Like This. Try Again...");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            catch (IOException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Wrong Info About File. Try Again...");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No Access. Try Again...");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            catch (System.Security.SecurityException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Restricted. Try Again...");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("ERROR:" + ex.Message);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
     }
 }
