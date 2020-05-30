@@ -5,3 +5,10 @@ C:\Users\koch\source\repos\Server\Server\obj\Debug\Server.csprojAssemblyReferenc
 C:\Users\koch\source\repos\Server\Server\obj\Debug\Server.csproj.CoreCompileInputs.cache
 C:\Users\koch\source\repos\Server\Server\obj\Debug\Server.exe
 C:\Users\koch\source\repos\Server\Server\obj\Debug\Server.pdb
+C:\Users\koch\Desktop\books_to_change\Server\bin\Debug\Server.exe.config
+C:\Users\koch\Desktop\books_to_change\Server\bin\Debug\Server.exe
+C:\Users\koch\Desktop\books_to_change\Server\bin\Debug\Server.pdb
+C:\Users\koch\Desktop\books_to_change\Server\obj\Debug\Server.csprojAssemblyReference.cache
+C:\Users\koch\Desktop\books_to_change\Server\obj\Debug\Server.csproj.CoreCompileInputs.cache
+C:\Users\koch\Desktop\books_to_change\Server\obj\Debug\Server.exe
+C:\Users\koch\Desktop\books_to_change\Server\obj\Debug\Server.pdb

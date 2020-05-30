@@ -100,10 +100,9 @@ namespace Server
                 }
                 watch.Stop();
                 Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("Name: " + file + $".txt:\n" +
-                    $"\t\tInitial Letters: {lettersInitial} " +
-                    $"--> Afterwards Letters: {textNew.ToString().Length}\n" +
-                    $"\t\tTime: {watch.Elapsed} ({watch.Elapsed:ss\\.fff} sec)");
+                Console.WriteLine("Name: " + file + $".txt" +
+                    $"\tLetters: {lettersInitial} --> {textNew.ToString().Length}" +
+                    $"\tTime: {watch.Elapsed} ({watch.Elapsed:ss\\.fff} sec)");
                 Console.ForegroundColor = ConsoleColor.White;
 
                 File.WriteAllText(pathNew + "new_" + file + ".txt", textNew.ToString());
