@@ -106,7 +106,7 @@ namespace Server
                     $"\t\tTime: {watch.Elapsed} ({watch.Elapsed:ss\\.fff} sec)");
                 Console.ForegroundColor = ConsoleColor.White;
 
-                File.WriteAllText(textNew.ToString(), pathNew + "new_" + file + ".txt");
+                File.WriteAllText(pathNew + "new_" + file + ".txt", textNew.ToString());
             }
             catch (FileNotFoundException)
             {
