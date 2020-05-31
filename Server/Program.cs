@@ -6,6 +6,11 @@ using System.Net.Http;
 
 namespace Server
 {
+    /// <summary>
+    /// ФИО: Кочарян Тигран Самвелович
+    /// Группа: БПИ199
+    /// CР 4.2
+    /// </summary>
     public class Program
     {
         /// <summary>
