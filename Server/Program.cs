@@ -36,6 +36,36 @@ namespace Server
                     await AsyncMethod(files);
                     await DownloadMethod(link);
                 }
+                catch (HttpRequestException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("HTTP Error. Try Again...");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                catch (FileNotFoundException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("No File Like This. Try Again...");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                catch (IOException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Wrong Info About File. Try Again...");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("No Access. Try Again...");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                catch (System.Security.SecurityException)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Restricted. Try Again...");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
                 catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
