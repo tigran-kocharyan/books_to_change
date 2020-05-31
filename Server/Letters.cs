@@ -1,18 +1,28 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Net.Http;
 
 namespace Server
 {
     public class Letters
     {
-        public static readonly string pathNew = "../../../booksNew/";
-        public static readonly string pathOld = "../../../booksOld/";
+        /// <summary>
+        /// Сохраняем Пути к папкам с файлами.
+        /// </summary>
+        public static readonly string pathNew = "NewBooks/";
 
+        /// <summary>
+        /// Сохраняем Пути к папкам с файлами.
+        /// </summary>
+        public static readonly string pathOld = "OldBooks/";
+
+        /// <summary>
+        /// Сохраняем Словарь, где ключ - латинский символ, а
+        /// значение - соответсвующий ему символ-строка из кириллицы.
+        /// </summary>
         static Dictionary<char, string> letters = new Dictionary<char, string>
         {
             ['A'] = "А",
@@ -69,42 +79,57 @@ namespace Server
             ['z'] = "з",
         };
 
+        /// <summary>
+        /// Метод для Чтения, Обработки, Сохранения текста из файла 
+        /// и вывода времени его обработки.
+        /// </summary>
         public static void ChangeLetters(string file)
         {
-            int lettersInitial;
-
+            /// Инициализируем таймер и StringBuilder.
             Stopwatch watch = new Stopwatch();
             StringBuilder textNew = new StringBuilder();
 
+            /// Ловим исключения работы с фалом.
             try
             {
+                /// Запускаем таймер.
                 watch.Start();
+
+                /// Считываем текст.
                 string textOld = File.ReadAllText(pathOld + file + ".txt");
 
-                lettersInitial = textOld.Length;
+                /// Считаем изначальное количество символов и обрабатываем каждый файл.
+                int lettersInitial = textOld.Length;
                 for (int i = 0; i < lettersInitial; i++)
                 {
+                    /// Если символ есть в виде ключа, 
+                    /// то добавляем значение этого ключа в новый текст.
                     if (letters.ContainsKey(textOld[i]))
                     {
-                        // Альтернативным решенем было бы создание обычной строки и добавление.
+                        // Альтернативным решением было бы создание обычной строки и добавление.
                         textNew.Append(letters[textOld[i]]);
                     }
                     else
                     {
+                        /// Проверяем на Unicode.
                         if (!char.IsLetter(textOld[i]))
                         {
-                            // Альтернативным решенем было бы создание обычной строки и добавление.
+                            // Альтернативным решением было бы создание обычной строки и добавление.
                             textNew.Append(textOld[i]);
                         }
                     }
                 }
+                /// Останавливаем таймер и выводим в консоль всю информацию.
                 watch.Stop();
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("Name: " + file + $".txt" +
+                lock (Console.Out)
+                {
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("File Name: " + file + ".txt" +
                     $"\tLetters: {lettersInitial} --> {textNew.ToString().Length}" +
                     $"\tTime: {watch.Elapsed} ({watch.Elapsed:ss\\.fff} sec)");
-                Console.ForegroundColor = ConsoleColor.White;
-
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                /// Сохраняем файл
                 File.WriteAllText(pathNew + "new_" + file + ".txt", textNew.ToString());
             }
             catch (FileNotFoundException)
@@ -137,6 +162,52 @@ namespace Server
                 Console.WriteLine("ERROR:" + ex.Message);
                 Console.ForegroundColor = ConsoleColor.White;
             }
+        }
+
+        /// <summary>
+        /// Метод для обработки текста из ответа HttpResponseMessage 
+        /// с подсчетом и выводом времени обработки.
+        /// </summary>
+        public static void ChangeLettersLink(HttpResponseMessage content)
+        {
+            /// Инициализируем таймер и StringBuilder и ответ HttpResponseMessage.
+            Stopwatch watch = new Stopwatch();
+            StringBuilder textNew = new StringBuilder();
+            string initialText = content.Content.ReadAsStringAsync().Result;
+
+            /// Запускаем таймер.
+            watch.Start();
+            for (int i = 0; i < initialText.Length; i++)
+            {
+                /// Если символ есть в виде ключа, 
+                /// то добавляем значение этого ключа в новый текст.
+                if (letters.ContainsKey(initialText[i]))
+                {
+                    // Альтернативным решенем было бы создание обычной строки и добавление.
+                    textNew.Append(letters[initialText[i]]);
+                }
+                else
+                {
+                    /// Проверяем на Unicode.
+                    if (!char.IsLetter(initialText[i]))
+                    {
+                        // Альтернативным решенем было бы создание обычной строки и добавление.
+                        textNew.Append(initialText[i]);
+                    }
+                }
+            }
+            /// Останавливаем таймер и выводим в консоль всю информацию.
+            watch.Stop();
+            lock (Console.Out)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("File Name: The Project Gutenberg.txt" +
+                $"\tLetters: {initialText.Length} --> {textNew.ToString().Length}" +
+                $"\tTime: {watch.Elapsed} ({watch.Elapsed:ss\\.fff} sec)");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            /// Сохраняем файл
+            File.WriteAllText(pathNew + "new_book_from_web.txt", textNew.ToString());
         }
     }
 }

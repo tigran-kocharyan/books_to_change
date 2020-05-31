@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Net.Http;
-using System.IO;
 
 namespace Server
 {
     public class Program
     {
+        /// <summary>
+        /// Точка входа в программу.
+        /// </summary>
+        /// <returns></returns>
         static async Task Main()
         {
             // Название файлов для обработки.
@@ -20,12 +21,15 @@ namespace Server
             // Ссылка на файл в интернете.
             string link = "https://www.gutenberg.org/files/1342/1342-0.txt";
 
+            /// Выполняем в цикле запуск
             do
             {
                 try
                 {
+                    /// Запускаем методы синхронные и асинхронные.
                     SyncMethod(files);
                     await AsyncMethod(files);
+                    await DownloadMethod(link);
                 }
                 catch (Exception e)
                 {
@@ -44,11 +48,14 @@ namespace Server
         /// </summary>
         public static void SyncMethod(string[] files)
         {
+            /// Запуск подсчета таймер до и после обработки файлов синхронно.
             Stopwatch stopwatch = new Stopwatch();
             Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Part 1...");
             Console.WriteLine("Sync Method Starts...");
             Console.ForegroundColor = ConsoleColor.White;
 
+            /// Запуск подсчета таймер до и после обработки файлов синхронно.
             stopwatch.Start();
             foreach (var file in files)
             {
@@ -56,6 +63,7 @@ namespace Server
             }
             stopwatch.Stop();
 
+            /// Запуск подсчета таймер до и после обработки файлов синхронно.
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Sync Method Finishes Within: " +
                 $"{stopwatch.Elapsed} ({stopwatch.Elapsed:ss\\.fff} sec)\n");
@@ -67,18 +75,55 @@ namespace Server
         /// </summary>
         public static async Task AsyncMethod(string[] files)
         {
+            /// Запуск подсчета таймер до и после обработки файлов асинхронно.
             Stopwatch stopwatch = new Stopwatch();
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine("\nAsync Method Starts...");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Part 2...");
+            Console.WriteLine("Async Method Starts...");
             Console.ForegroundColor = ConsoleColor.White;
 
+            /// Запуск подсчета таймер до и после обработки файлов асинхронно.
             stopwatch.Start();
             await Task.WhenAll(files.Select(file => Task.Run(() => Letters.ChangeLetters(file))));
             stopwatch.Stop();
 
-            Console.ForegroundColor = ConsoleColor.Magenta;
+            /// Запуск подсчета таймер до и после обработки файлов асинхронно.
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Async Method Finishes Within: " +
                 $"{stopwatch.Elapsed} ({stopwatch.Elapsed:ss\\.fff} sec)\n");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static async Task DownloadMethod(string link)
+        {
+            /// Запуск подсчета таймер до и после обработки текста по ссылке асинхронно.
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Part 3...");
+            Console.WriteLine("Download Method Starts...");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            /// Запуск подсчета таймер до и после обработки текста по ссылке асинхронно.
+            using (HttpClient client = new HttpClient())
+            {
+                using(HttpResponseMessage bookText = await client.GetAsync(link))
+                {
+                    /// Всё тот же алгоритм, что и для обработки обычного текста.
+                    if (bookText.IsSuccessStatusCode)
+                    {
+                        Letters.ChangeLettersLink(bookText);
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Link Is Broken. Try Again...");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                }
+            }
+
+            /// Запуск подсчета таймер до и после обработки текста по ссылке асинхронно.
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Download Method Finishes...");
             Console.ForegroundColor = ConsoleColor.White;
         }
     }
